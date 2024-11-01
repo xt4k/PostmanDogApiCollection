@@ -41,7 +41,7 @@
 ####
 ![img_8.png](img_8.png)
 ####  
-### I ❤️ <img src="https://github.com/user-attachments/assets/26abf4fc-8eba-436c-91ce-21e03f695d76" width="300" height="200" alt="image">
+### I ❤️ <img src="https://github.com/user-attachments/assets/26abf4fc-8eba-436c-91ce-21e03f695d76" width="30" height="30" alt="image">
 
 
 
