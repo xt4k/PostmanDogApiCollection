@@ -1,6 +1,6 @@
 #  QA API Automation Test
 
-##### Done for task `QA UI Automation Test`
+##### Done for task `QA UI Automation Test` with ![img_9.png](img_9.png)
 ## Work with site https://dog.ceo/dog-api/  API endpoint https://dog.ceo/api/breeds/list/all
 ###
 ![img_7.png](img_7.png)
@@ -41,6 +41,6 @@
 ####
 ![img_8.png](img_8.png)
 ####  
-#### line 70-82
+### I ❤️ ![img_9.png](img_9.png)
 
 
