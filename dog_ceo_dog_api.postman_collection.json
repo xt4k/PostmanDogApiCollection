@@ -1,0 +1,171 @@
+{
+	"info": {
+		"_postman_id": "68d76d42-de0c-449a-b930-10ced8ae411a",
+		"name": "_dog_ceo_dog-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4996127"
+	},
+	"item": [
+		{
+			"name": "get_all",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"pm.test(\"Create a list of individual dog breeds from the response\", function () {  \r",
+							"    let breeds = pm.response.json().message;\r",
+							"    let formattedBreeds = [];\r",
+							"    for (let subBreed in breeds) { // Loop, which will iterate over the properties of the breeds object.\r",
+							"        if (breeds[subBreed].length > 0) {   // For cases when breed has any sub-breeds.       \r",
+							"            breeds[subBreed].forEach(subBreed => {  // Loop iterates through all sub-breeds of each main breed if sub-breeds exist.\r",
+							"                formattedBreeds.push(`${subBreed.charAt(0).toUpperCase() + subBreed.slice(1)} ${subBreed}`);// Creates a formatted string with each breed's name, capitalizing the first letter of each subBreed (sub-breed) name.\r",
+							"            });\r",
+							"        } else {         \r",
+							"            formattedBreeds.push(subBreed);// if there are no sub-breeds\r",
+							"        }\r",
+							"    }   \r",
+							"    console.log(formattedBreeds);  \r",
+							"    pm.expect(formattedBreeds.length).to.be.above(0);  \r",
+							"    pm.collectionVariables.set(\"breed_list\", JSON.stringify(formattedBreeds));// store in collectin variable\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Testcase 1: Check if response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);//Check that status is 200\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Testcase 2: Check schema for dog breeds response\", function () {\r",
+							"    const schema = {\r",
+							"        \"type\": \"object\",\r",
+							"        \"properties\": {\r",
+							"            \"status\": {\r",
+							"                \"type\": \"string\",\r",
+							"                \"enum\": [\"success\"]\r",
+							"            },\r",
+							"            \"message\": {\r",
+							"                \"type\": \"object\",\r",
+							"                \"patternProperties\": {\r",
+							"                    \"^[a-zA-Z]+$\": {\r",
+							"                        \"type\": \"array\",\r",
+							"                        \"items\": {\r",
+							"                            \"type\": \"string\"\r",
+							"                        }\r",
+							"                    }\r",
+							"                }\r",
+							"            }\r",
+							"        },\r",
+							"        \"required\": [\"status\", \"message\"]\r",
+							"    }// Define validation schema.\r",
+							"\r",
+							"    const Ajv = require('ajv');// Imports the Ajv library, which is used for JSON schema validation.\r",
+							"    const ajv = new Ajv();// The instance of the Ajv class is created\r",
+							"    const validateFunction = ajv.compile(schema); // Compiles a provided JSON schema into a validation function.\r",
+							"    const isValid = validateFunction(pm.response.json()); // Validates the JSON response from pm.response.json() against the compiled schema.\r",
+							"    console.log(\"response is align with schema: \"+isValid);  \r",
+							"    pm.expect(isValid, JSON.stringify(validateFunction.errors)).to.be.true;// Checks if isValid is true. If it’s not -> the assertion will fail, displaying validateFunction.errors in JSON format to provide details on why the validation failed.\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Testcase 3: Check if breeds not contain duplicates\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    let breeds = Object.keys(response.message);// Extracts the keys from the response.message object\r",
+							"    let uniqueBreeds = [...new Set(breeds)]; //Create a new array of unique breed names and remove any duplicate values.\r",
+							"    pm.expect(uniqueBreeds.length).to.equal(breeds.length);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Testcase 4: Response should contain expected parent breeds\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    let breeds = Object.keys(response.message); // Extracts the keys from the response.message object\r",
+							"    let expectedParentBreeds = JSON.parse(pm.collectionVariables.get(\"expectedParentBreeds\"));// String from the collection variables with the key \"expectedParentBreeds\" is parsed into a JavaScript object or array.\r",
+							"\r",
+							"    expectedParentBreeds.forEach(expectedBreed => {      // Loop that iterates over each element in the expectedParentBreeds array.each breed in the list.\r",
+							"        pm.expect(breeds).to.include(expectedBreed.toLowerCase(), `Expected parent breed ${expectedBreed} should be in the response`);// Will be executed for every expectedBreed\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Testcase 5: Response should contain expected child breeds for a given parent breed\", function () {\r",
+							"    let response = pm.response.json();\r",
+							"    let breeds = response.message;\r",
+							"    let parentBreed=JSON.parse(pm.collectionVariables.get(\"expectedParentBreedWithChilds\")); //get a JSON string from the Postman collection variables and parse it into a JavaScript object\r",
+							"    let expectedChildBreeds = JSON.parse(pm.collectionVariables.get(\"expectedChildBreeds\")); //get a JSON string from the Postman collection variables and parse it into a JavaScript object\r",
+							"\r",
+							"    pm.expect(Object.keys(breeds).map(breed => breed.toLowerCase())).to.include(parentBreed.toLowerCase(), `Parent breed ${parentBreed} should be in the response`); \r",
+							"    // checks whether the list of breed keys (converted to lowercase) includes the expected parent breed \r",
+							"\r",
+							"    expectedChildBreeds.forEach(childBreed => {\r",
+							"        pm.expect(breeds[parentBreed].map(breed => breed.toLowerCase())).to.include(childBreed.toLowerCase(), `Expected child breed ${childBreed} for parent ${parentBreed} should be in the response`);\r",
+							"    });\r",
+							"});//The block iterates over each childBreed in the expectedChildBreeds array. For each child breed, it checks if the array of child breeds associated with the parentBreed includes the expected child breed. \r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dog.ceo/api/breeds/list/all",
+					"protocol": "https",
+					"host": [
+						"dog",
+						"ceo"
+					],
+					"path": [
+						"api",
+						"breeds",
+						"list",
+						"all"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "breed_list",
+			"value": ""
+		},
+		{
+			"key": "expectedParentBreeds",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "expectedParentBreedWithChilds",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "expectedChildBreeds",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
