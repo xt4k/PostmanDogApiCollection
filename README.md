@@ -2,6 +2,8 @@
 
 ##### Done for task `QA UI Automation Test`
 ## Work with site https://dog.ceo/dog-api/  API endpoint https://dog.ceo/api/breeds/list/all
+###
+![img_7.png](img_7.png)
 
 ###
 ### 0. Make a request to the endpoint and create a list of individual dog breeds from the response received.
