@@ -1,6 +1,6 @@
 #  QA API Automation Test
 
-##### Done for task `QA UI Automation Test` with ![img_9.png](img_9.png)
+##### Done for task `QA UI Automation Test` with <img src="https://github.com/user-attachments/assets/26abf4fc-8eba-436c-91ce-21e03f695d76" width="90" height="90" alt="image">
 ## Work with site https://dog.ceo/dog-api/  API endpoint https://dog.ceo/api/breeds/list/all
 ###
 ![img_7.png](img_7.png)
